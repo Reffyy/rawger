@@ -8,7 +8,7 @@ const formatGame = game => ({
   name: game.name,
   color: game.dominant_color,
   released: game.released,
-  platforms: game.platforms.map(p => p.platform.name)
+  platforms: (game.platforms || []).map(p => p.platform.name)
 });
 
 const formatCollection = collection => ({
