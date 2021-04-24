@@ -8,10 +8,13 @@ const defaultHeaders = {
   }
 };
 
-const get = (cache, timeout, token) => async (path, options = {}) => {
+const get = (cache, timeout, apiKey) => async (path, options = {}) => {
   if (typeof cache[path] !== 'undefined') return cache[path].data;
   
-  const resp = await fetch(path, merge(options, { headers: { token } }, defaultHeaders));
+  const url = new URL(path);
+  url.searchParams.append("key", key);
+
+  const resp = await fetch(url.toString(), merge(options, { headers: { } }, defaultHeaders));
   const json = await resp.json();
 
   // saves timeoutID for purging timers
@@ -24,30 +27,6 @@ const get = (cache, timeout, token) => async (path, options = {}) => {
   return json;
 }
 
-const post = token => async (path, data, options = {}) => {
-  const resp = await fetch(path, merge(options, {
-    method: 'POST',
-    headers: { token: `Token ${token}` },
-    body: JSON.stringify(data)
-  }, defaultHeaders));
-  const json = await resp.json();
-  return json;
-}
-
-const patch = token => async (path, data, options = {}) => {
-  const resp = await fetch(path, merge(options, {
-    method: 'PATCH',
-    headers: {
-      token: `Token ${token}`
-    },
-    body: JSON.stringify(data)
-  }, defaultHeaders));
-  const json = await resp.json();
-  return json;
-}
-
-module.exports = (cache, timeout, token) => ({
-  get: get(cache, timeout, token),
-  post: post(token),
-  patch: patch(token)
+module.exports = (cache, timeout, apiKey) => ({
+  get: get(cache, timeout, apiKey)
 });

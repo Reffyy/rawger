@@ -4,30 +4,11 @@ const users = require('./users');
 const games = require('./games');
 const { pather } = require('./utils');
 
-module.exports = async ({ timeout = 60, email, password } = {}) => {
+module.exports = async ({ timeout = 60, apiKey } = {}) => {
   let cache = {};
-  let token = '';
-
-  // log in if creds were provided
-  if (email && password) {
-    const resp = await fetch(pather('auth')('login'), {
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      method: 'POST',
-      body: JSON.stringify({
-        email,
-        password
-      })
-    });
-
-    const json = await resp.json();
-    token = json.key;
-  }
 
   // init fetcher
-  const fetcher = Fetcher(cache, timeout * 1000, token);
+  const fetcher = Fetcher(cache, timeout * 1000, apiKey);
 
   // init cache purger
   const purgeCache = cache => () => {
