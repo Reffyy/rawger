@@ -10,9 +10,9 @@ const defaultHeaders = {
 
 const get = (cache, timeout, apiKey) => async (path, options = {}) => {
   if (typeof cache[path] !== 'undefined') return cache[path].data;
-  
+
   const url = new URL(path);
-  url.searchParams.append("key", key);
+  url.searchParams.append("key", apiKey);
 
   const resp = await fetch(url.toString(), merge(options, { headers: { } }, defaultHeaders));
   const json = await resp.json();
